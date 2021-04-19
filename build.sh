@@ -40,6 +40,14 @@ buildMaven() {
     cd "$SAVED" >/dev/null
 }
 
+buildNative() {
+    from=${1}
+    to=${2}
+    echo "Transferring directories"
+    cp -a "${from}/." "${to}"
+    echo "Transferring DONE"
+}
+
 source /root/.sdkman/bin/sdkman-init.sh
 
 # Attempt to set APP_HOME
@@ -81,6 +89,9 @@ fi
 if [ -f "/chaincode/input/src/chaincode.jar" ]
 then
     buildJar /chaincode/input/src/chaincode.jar /chaincode/output/
+elif [ -d "/chaincode/input/lib" ] && [ -d "/chaincode/input/bin" ]
+then
+    buildNative /chaincode/input /chaincode/output
 elif [ -f "/chaincode/input/src/build.gradle" ]
 then
     buildGradle /chaincode/input/src/ /chaincode/output/
