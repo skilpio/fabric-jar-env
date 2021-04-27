@@ -64,10 +64,27 @@ save () {
 }
 APP_ARGS=$(save "$@")
 
+echo "START start!!!!"
+echo "env: ___________________"
+env | sort 
+echo "________________________"
+echo "certs:"
+ls -la /etc/hyperledger/fabric/peer.crt
+ls -la /etc/hyperledger/fabric/client.key
+ls -la /etc/hyperledger/fabric/client.key
+echo "----------------------------------"
+
 if [ -f "${APP_HOME}/chaincode/chaincode.jar" ]
 then
+    echo "++start: JAVA++"
     exec "$JAVACMD" -jar $APP_HOME/chaincode/chaincode.jar "$@"
-elif [ -f "$APP_HOME/chaincode/output/bin/chaincode-impl" ]
+elif [ -f "$APP_HOME/chaincode/bin/chaincode-impl" ]
 then
-    exec "$APP_HOME/chaincode/output/bin/chaincode-impl"
+    echo "++start NATIVE++"
+    chmod +x "$APP_HOME/chaincode/bin/chaincode-impl"
+#    export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+#    export CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt
+#    export CORE_TLS_CLIENT_KEY_PATH=/etc/hyperledger/fabric/client.key
+#    export CORE_TLS_CLIENT_CERT_PATH=/etc/hyperledger/fabric/client.crt
+    exec "$APP_HOME/chaincode/bin/chaincode-impl"
 fi

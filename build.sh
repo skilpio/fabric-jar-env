@@ -85,27 +85,59 @@ else
     mkdir -p ${APP_HOME}/chaincode/build/out
 fi
 
+>&2 echo "START build.sh!!!!"
+>&2 echo "/chaincode/input/src/"
+>&2 ls -la /chaincode/input/src/
+>&2 echo "/chaincode/output/src/"
+>&2 ls -la /chaincode/output/src/
+>&2 echo "/chaincode/src/"
+>&2 ls -la /chaincode/src/
+>&2 echo "/chaincode/"
+>&2 ls -la /chaincode/
+
+
+echo "START build.sh!!!!"
+echo "/chaincode/input/src/"
+ls -la /chaincode/input/src/
+echo "/chaincode/output/src/"
+ls -la /chaincode/output/src/
+echo "/chaincode/src/"
+ls -la /chaincode/src/
+echo "/chaincode/"
+ls -la /chaincode/
+
+
+
+>&2 ls -la /chaincode/input/src/bin/chaincode-impl
+>&2 pwd
+>&2 tree /chaincode
+sleep 5
 
 if [ -f "/chaincode/input/src/chaincode.jar" ]
 then
+    echo "BuildJar"
     buildJar /chaincode/input/src/chaincode.jar /chaincode/output/
 elif [ -f "/chaincode/input/src/build.gradle" ]
 then
+    echo "buildGradle"
     buildGradle /chaincode/input/src/ /chaincode/output/
-elif [ -d "/chaincode/input/lib" ] && [ -d "/chaincode/input/bin" ]
+elif [ -f "/chaincode/input/src/bin/chaincode-impl" ]
 then
-    buildNative /chaincode/input /chaincode/output
+    echo "BuildNative"
+    buildNative /chaincode/input/src/ /chaincode/output/
 elif [ -f "/chaincode/input/build.gradle" ]
 then
+    echo "BuildGradle"
     buildGradle /chaincode/input/ /chaincode/output/
 elif [ -f "/chaincode/input/src/pom.xml" ]
 then
+    echo "BuildMaven"
     buildMaven /chaincode/input/src/ /chaincode/output/
 elif [ -f "/chaincode/input/pom.xml" ]
 then
     buildMaven /chaincode/input/ /chaincode/output/
 else
-    >&2 echo "Not build.gralde nor pom.xml found in chaincode source, don't know how to build chaincode"
+    >&2 echo "Not build.gralde nor pom.xml found in chaincode source, don't know how to build chaincode!!!"
     >&2 echo "Project folder content:"
     >&2 find /chaincode/input/src/ -name "*" -exec ls -ld '{}' \;
     exit 255
