@@ -3,6 +3,15 @@
 # Attempt to set APP_HOME
 # Resolve links: $0 may be a link
 PRG="$0"
+
+while (( "$#" )); do
+    case "$1" in 
+    --peerAddress) shift; peerAddress=$1;;
+    *) break;;
+    esac
+done
+echo "Peer address: $peerAddress"
+
 # Need this for relative symlinks.
 while [ -h "$PRG" ] ; do
     ls=`ls -ld "$PRG"`
@@ -64,10 +73,24 @@ save () {
 }
 APP_ARGS=$(save "$@")
 
+echo "START start"
+echo "env: ___________________"
+env | sort 
+echo "________________________"
+echo "certs:"
+ls -la /etc/hyperledger/fabric/peer.crt
+ls -la /etc/hyperledger/fabric/client.key
+ls -la /etc/hyperledger/fabric/client.key
+echo "----------------------------------"
+
 if [ -f "${APP_HOME}/chaincode/chaincode.jar" ]
 then
+    echo "++start: JAVA++"
     exec "$JAVACMD" -jar $APP_HOME/chaincode/chaincode.jar "$@"
-elif [ -f "$APP_HOME/chaincode/output/bin/chaincode-impl" ]
+elif [ -f "$APP_HOME/chaincode/bin/chaincode-impl" ]
 then
-    exec "$APP_HOME/chaincode/output/bin/chaincode-impl"
+    echo "++start NATIVE++"
+    chmod +x "$APP_HOME/chaincode/bin/chaincode-impl"
+    export CORE_PEER_ADDRESS=${peerAddress}
+    exec "$APP_HOME/chaincode/bin/chaincode-impl"
 fi

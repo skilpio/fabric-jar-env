@@ -50,9 +50,14 @@ buildNative() {
 
 source /root/.sdkman/bin/sdkman-init.sh
 
+echo "build.sh args: $*"
+
 # Attempt to set APP_HOME
 # Resolve links: $0 may be a link
 PRG="$0"
+echo "build.sh args: $*"
+env | sort
+
 # Need this for relative symlinks.
 while [ -h "$PRG" ] ; do
     ls=`ls -ld "$PRG"`
@@ -85,21 +90,30 @@ else
     mkdir -p ${APP_HOME}/chaincode/build/out
 fi
 
+>&2 echo "START build.sh"
 
 if [ -f "/chaincode/input/src/chaincode.jar" ]
 then
+    echo "BuildJar"
     buildJar /chaincode/input/src/chaincode.jar /chaincode/output/
 elif [ -f "/chaincode/input/src/build.gradle" ]
 then
+    echo "buildGradle"
     buildGradle /chaincode/input/src/ /chaincode/output/
 elif [ -d "/chaincode/input/lib" ] && [ -d "/chaincode/input/bin" ]
 then
     buildNative /chaincode/input /chaincode/output
 elif [ -f "/chaincode/input/build.gradle" ]
 then
+    echo "BuildGradle"
     buildGradle /chaincode/input/ /chaincode/output/
+elif [ -f "/chaincode/input/src/bin/chaincode-impl" ]
+then
+    echo "BuildNative"
+    buildNative /chaincode/input/src/ /chaincode/output/
 elif [ -f "/chaincode/input/src/pom.xml" ]
 then
+    echo "BuildMaven"
     buildMaven /chaincode/input/src/ /chaincode/output/
 elif [ -f "/chaincode/input/pom.xml" ]
 then
