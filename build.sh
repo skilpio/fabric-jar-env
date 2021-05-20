@@ -100,9 +100,6 @@ elif [ -f "/chaincode/input/src/build.gradle" ]
 then
     echo "buildGradle"
     buildGradle /chaincode/input/src/ /chaincode/output/
-elif [ -d "/chaincode/input/lib" ] && [ -d "/chaincode/input/bin" ]
-then
-    buildNative /chaincode/input /chaincode/output
 elif [ -f "/chaincode/input/build.gradle" ]
 then
     echo "BuildGradle"
