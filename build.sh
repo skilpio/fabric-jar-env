@@ -50,9 +50,14 @@ buildNative() {
 
 source /root/.sdkman/bin/sdkman-init.sh
 
+echo "build.sh args: $*"
+
 # Attempt to set APP_HOME
 # Resolve links: $0 may be a link
 PRG="$0"
+echo "build.sh args: $*"
+env | sort
+
 # Need this for relative symlinks.
 while [ -h "$PRG" ] ; do
     ls=`ls -ld "$PRG"`
